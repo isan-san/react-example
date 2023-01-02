@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 // import PropTypes from 'prop-types';
 import { Task } from "../../models/task.class";
 import { LEVELS } from "../../models/levels.enum";
@@ -30,19 +30,35 @@ const TaskListComponent = () => {
     defaultTask2,
     defaultTask3,
   ]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    console.log("Tasks state as been modified");
-    setLoading(false);
+  // const [loading, setLoading] = useState(true);
+  // useEffect(() => {
+  //   console.log("Tasks state as been modified");
+  //   setLoading(false);
 
-    return () => {
-      console.log("TaskListComponent is going to unmount...");
-    };
-  }, [tasks]);
+  //   return () => {
+  //     console.log("TaskListComponent is going to unmount...");
+  //   };
+  // }, [tasks]);
 
-  // const updateCompleted = (id) => {
-  //   console.log("Change task state");
-  // };
+  const completeTask = (task) => {
+    const taskIndex = tasks.indexOf(task);
+    const tempTask = [...tasks];
+    tempTask[taskIndex].completed = !task.completed;
+    setTasks((task = tempTask));
+  };
+
+  const removeTask = (task) => {
+    const taskIndex = tasks.indexOf(task);
+    const tempTask = [...tasks];
+    tempTask.splice(taskIndex, 1);
+    setTasks((task = tempTask));
+  };
+
+  const addTask = (task) => {
+    const tempTask = [...tasks];
+    tempTask.push(task);
+    setTasks((task = tempTask));
+  };
 
   return (
     <div>
@@ -56,20 +72,29 @@ const TaskListComponent = () => {
             style={{ position: "relative", heigth: "400px" }}
           >
             <table>
-              <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Description</th>
-                <th scope="col">Priority</th>
-                <th scope="col">Actions</th>
-              </tr>
               <tbody>
-                {tasks.map((task,index)=>{
-                  return <TaskComponent key={index} task={task}></TaskComponent>
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Priority</th>
+                  <th scope="col">Actions</th>
+                </tr>
+                {tasks.map((task, index) => {
+                  return (
+                    <TaskComponent
+                      key={index}
+                      task={task}
+                      complete={completeTask}
+                      remove={removeTask}
+                    ></TaskComponent>
+                  );
                 })}
               </tbody>
             </table>
           </div>
-          <TaskForm></TaskForm>
+          <div className="card-footer">
+          <TaskForm add={addTask}></TaskForm>
+          </div>
         </div>
       </div>
     </div>

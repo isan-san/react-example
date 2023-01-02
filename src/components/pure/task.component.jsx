@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "../../styles/task.scss";
@@ -6,13 +6,10 @@ import PropTypes from "prop-types";
 import { Task } from "../../models/task.class";
 import { LEVELS } from "../../models/levels.enum";
 
-const TaskComponent = ({ task }) => {
-  useEffect(() => {
-    console.log("TaskComponent created");
-    return () => {
-      console.log(`TaskComponent ${task.name} is going to unmount`);
-    };
-  }, [task]);
+const TaskComponent = ({ task, complete, remove }) => {
+  // useEffect(() => {
+  //   console.log("TaskComponent created");
+  // }, []);
 
   const taskLevelBadge = () => {
     switch (task.level) {
@@ -42,9 +39,9 @@ const TaskComponent = ({ task }) => {
 
   const taskIconCompleted = () =>
     task.completed ? (
-      <i className="bi-toggle-on" style={{ color: "green" }}></i>
+      <i onClick={()=>complete(task)} className="bi-toggle-on task-action" style={{ color: "green" }}></i>
     ) : (
-      <i className="bi-toggle-off" style={{ color: "grey" }}></i>
+      <i onClick={()=>complete(task)} className="bi-toggle-off task-action" style={{ color: "grey" }}></i>
     );
 
   return (
@@ -60,14 +57,15 @@ const TaskComponent = ({ task }) => {
         <span className="aling-middle">{taskIconCompleted()}</span>
       </td>
       <td className="aling-middle">
-        <i className="bi-trash" style={{ color: "black" }}></i>
+        <i className="bi-trash task-action" style={{ color: "black" }} onClick={()=>remove(task)}></i>
       </td>
     </tr>
   );
 };
 
 TaskComponent.propTypes = {
-  task: PropTypes.instanceOf(Task),
+  task: PropTypes.instanceOf(Task).isRequired,
+  complete: PropTypes.func.isRequired,
 };
 
 export default TaskComponent;
